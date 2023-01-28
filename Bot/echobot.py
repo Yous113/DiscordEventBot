@@ -1,5 +1,6 @@
 
 import discord
+import lister
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -24,6 +25,7 @@ async def on_ready():
 async def on_message(message):
     contents = message.content
     
+    
     if contents == "!help":
       helpMessage = "Decide the date of your event by using !SetEvent followed by the title of the event"
       await message.channel.send(helpMessage)
@@ -37,10 +39,9 @@ async def on_message(message):
 @client.event
 async def on_raw_reaction_add(payload):
   message_id = payload.message_id
-  if payload.emoji.name == "":
-    vote =+ 1
-    
   
+    
+
 
            
 token = get_token()
