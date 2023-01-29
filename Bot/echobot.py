@@ -1,6 +1,7 @@
 
 import discord
 import lister
+import Classes
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -24,16 +25,39 @@ async def on_ready():
 @client.event
 async def on_message(message):
     contents = message.content
+    title = ""
+    setEvent = False
+    helpMessage = "Decide the date of your event by using !SetEvent followed by the title of the event"
+    
     
     
     if contents == "!help":
-      helpMessage = "Decide the date of your event by using !SetEvent followed by the title of the event"
+      
       await message.channel.send(helpMessage)
 
     if contents.startswith("!SetEvent"):
       title = contents[9:]
       firstreply = "Giv nogen datoer for eventet: " + title + " ,ved brug af kommando '!date' og afslut med '!done'"
+      title = lister.Event(title, [])
+      print(title.eventName)
+      setEvent = True
+      print(setEvent)
       await message.channel.send(firstreply)
+
+    if contents.startswith("!Date") and contents.endswith("!Done") and setEvent == True: 
+      con = contents[6:]
+      con = con.replace("!Done","")
+      dates = con.split(",")
+      setEvent = False
+      title.eventDates = dates
+      print(setEvent)
+      for date in dates:
+        await message.channel.send(date)
+
+    
+      # sæt hver besked ind i en dictionary så vi kan tælle dens votes
+      # sæt listen af datoer ind som værdi for event objektet
+
     
 
 @client.event
@@ -57,4 +81,6 @@ client.run(token)
 # Bot: Når votering er færdig skriv "!BestemDato"
 # Bruger: !BestemDato
 # Bot: "Title" foregår i dato 1
+
+
 
