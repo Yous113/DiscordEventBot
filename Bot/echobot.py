@@ -1,7 +1,6 @@
 
 import discord
 import lister
-import Classes
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -9,6 +8,7 @@ intents.message_content = True
 client = discord.Client(intents=intents)
 
 TOK_FILE = "token.txt"
+
 
 
 def get_token():
@@ -20,13 +20,13 @@ def get_token():
 @client.event
 async def on_ready():
     print("Connected!")
+    lister.setEvent = False
+    lister.title = ""
 
 
 @client.event
 async def on_message(message):
     contents = message.content
-    title = ""
-    setEvent = False
     helpMessage = "Decide the date of your event by using !SetEvent followed by the title of the event"
     
     
@@ -36,27 +36,28 @@ async def on_message(message):
       await message.channel.send(helpMessage)
 
     if contents.startswith("!SetEvent"):
-      title = contents[9:]
-      firstreply = "Giv nogen datoer for eventet: " + title + " ,ved brug af kommando '!date' og afslut med '!done'"
-      title = lister.Event(title, [])
-      print(title.eventName)
-      setEvent = True
-      print(setEvent)
+      lister.title = contents[9:]
+      firstreply = "Giv nogen datoer for eventet: " + lister.title + " ,ved brug af kommando '!date' og afslut med '!done'"
+      lister.title = lister.Event(lister.title, [])
+      lister.setEvent = True
       await message.channel.send(firstreply)
+      
 
-    if contents.startswith("!Date") and contents.endswith("!Done") and setEvent == True: 
-      con = contents[6:]
-      con = con.replace("!Done","")
-      dates = con.split(",")
-      setEvent = False
-      title.eventDates = dates
-      print(setEvent)
-      for date in dates:
-        await message.channel.send(date)
+    if contents.startswith("!Date") and contents.endswith("!Done") and lister.setEvent == True: 
+          con = contents[6:]
+          con = con.replace("!Done","")
+          dates = con.split(",")
+          lister.title.eventDates = dates
+          print(lister.setEvent)
+          for date in dates:
+            await message.channel.send(date)
+            lister.mesDict[message.id] = date
+          lister.setEvent = False
+          
+          
 
     
       # sæt hver besked ind i en dictionary så vi kan tælle dens votes
-      # sæt listen af datoer ind som værdi for event objektet
 
     
 
