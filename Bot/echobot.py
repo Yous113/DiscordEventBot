@@ -60,6 +60,7 @@ async def on_message(message):
         max_key = [k for k, v in lister.ReactDict.items() if v == max_value]
         print(max_value)
         msg = await message.channel.fetch_message(max_key[0])
+        lister.ReactDict.clear()
         await message.channel.send(msg.content)
 
     
