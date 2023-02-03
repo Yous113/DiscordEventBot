@@ -29,8 +29,6 @@ async def on_message(message):
     contents = message.content
     helpMessage = "Decide the date of your event by using !SetEvent followed by the title of the event"
     
-    
-    
     if contents == "!help":
       
       await message.channel.send(helpMessage)
@@ -48,26 +46,40 @@ async def on_message(message):
           con = con.replace("!Done","")
           dates = con.split(",")
           lister.title.eventDates = dates
-          print(lister.setEvent)
           for date in dates:
             await message.channel.send(date)
-            lister.mesDict[message.id] = date
+            lister.mesDict[message.id] = 0
           lister.setEvent = False
-          
+
+    if contents.startswith("!SetDate"):
+      max_value = max(lister.mesDict.values())
+      max_key = [k for k, v in lister.mesDict.items() if v == max_value]
+      await message.channel.edit(max_key)
+
+    
+@client.event
+async def on_reaction_add(reaction, user):
+    message = reaction.message
+    message_id = reaction.message.id
+    
+    for r in message.reactions:
+       if message_id in lister.mesDict:
+        lister.mesDict[message_id] = r.count    
+    
+
+
+    # create a dictionary to store the count of each emoji
+#    emoji_counts = {}
+ #   for r in message.reactions:
+  #      emoji_counts[str(r.emoji)n] = r.count
+
+    # format the emoji counts into a string
+   # count_str = "\n".join([f"{emoji}: {count}" for emoji, count in emoji_counts.items()])
+    #await message.edit(content=f"Reaction count:\n{count_str}")
           
 
     
       # sæt hver besked ind i en dictionary så vi kan tælle dens votes
-
-    
-
-@client.event
-async def on_raw_reaction_add(payload):
-  message_id = payload.message_id
-  
-    
-
-
            
 token = get_token()
 client.run(token)
