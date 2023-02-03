@@ -47,16 +47,20 @@ async def on_message(message):
           dates = con.split(",")
           lister.title.eventDates = dates
           for date in dates:
-            m_id = await message.channel.send(date)
-            lister.ReactDict[m_id] = 0
+            m = await message.channel.send(date)
+            lister.ReactDict[m.id] = 0
           lister.setEvent = False
 
     if contents.startswith("!SetDate"):
-      max_value = max(lister.ReactDict.values())
-      max_key = [k for k, v in lister.ReactDict.items() if v == max_value]
-      print(max_key, type(max_key))
-      msg = await message.channel.fetch_message(max_key[0])
-      await message.channel.send(msg.content)
+      if len(lister.ReactDict) == 0:
+        firstreply = "Giv nogen datoer for eventet: " + lister.title + ",ved brug af kommando '!date' og afslut med '!done'"
+        await message.channel.send(firstreply)
+      else:
+        max_value = max(lister.ReactDict.values())
+        max_key = [k for k, v in lister.ReactDict.items() if v == max_value]
+        print(max_value)
+        msg = await message.channel.fetch_message(max_key[0])
+        await message.channel.send(msg.content)
 
     
 @client.event
@@ -64,38 +68,12 @@ async def on_reaction_add(reaction, user):
     message = reaction.message
     message_id = reaction.message.id
     
-    for r in message.reactions:
-      if message_id in lister.ReactDict:
-        lister.ReactDict[message_id] = r.count
+    if message_id in lister.ReactDict:
+      lister.ReactDict[message_id] = 0
+      for r in message.reactions:
+        lister.ReactDict[message_id] += r.count
+    for (k, v) in lister.ReactDict.items():
+      print(k, v)
 
-
-
-    # create a dictionary to store the count of each emoji
-#    emoji_counts = {}
- #   for r in message.reactions:
-  #      emoji_counts[str(r.emoji)n] = r.count
-
-    # format the emoji counts into a string
-   # count_str = "\n".join([f"{emoji}: {count}" for emoji, count in emoji_counts.items()])
-    #await message.edit(content=f"Reaction count:\n{count_str}")
-          
-
-    
-      # sæt hver besked ind i en dictionary så vi kan tælle dens votes
-           
 token = get_token()
 client.run(token)
-
-# Bruger: !SetEvent "Title"
-# Bot: Giv nogen datoer ved brug af kommando "!date" og afslut med "!done"
-# Bruger: !date ..... !done
-# Bot: Reager på den dato, som er bedst for jer
-# Bot: Dato 1
-# Bot: Dato 2
-# Bot: Dato 3
-# Bot: Når votering er færdig skriv "!BestemDato"
-# Bruger: !BestemDato
-# Bot: "Title" foregår i dato 1
-
-
-
