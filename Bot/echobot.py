@@ -7,7 +7,7 @@ intents.message_content = True
 
 client = discord.Client(intents=intents)
 
-TOK_FILE = "token.txt"
+TOK_FILE = "Token.txt"
 
 
 
