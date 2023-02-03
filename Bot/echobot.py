@@ -47,14 +47,16 @@ async def on_message(message):
           dates = con.split(",")
           lister.title.eventDates = dates
           for date in dates:
-            await message.channel.send(date)
-            lister.mesDict[message.id] = 0
+            m_id = await message.channel.send(date)
+            lister.ReactDict[m_id] = 0
           lister.setEvent = False
 
     if contents.startswith("!SetDate"):
-      max_value = max(lister.mesDict.values())
-      max_key = [k for k, v in lister.mesDict.items() if v == max_value]
-      await message.channel.edit(max_key)
+      max_value = max(lister.ReactDict.values())
+      max_key = [k for k, v in lister.ReactDict.items() if v == max_value]
+      print(max_key, type(max_key))
+      msg = await message.channel.fetch_message(max_key[0])
+      await message.channel.send(msg.content)
 
     
 @client.event
@@ -63,9 +65,9 @@ async def on_reaction_add(reaction, user):
     message_id = reaction.message.id
     
     for r in message.reactions:
-       if message_id in lister.mesDict:
-        lister.mesDict[message_id] = r.count    
-    
+      if message_id in lister.ReactDict:
+        lister.ReactDict[message_id] = r.count
+
 
 
     # create a dictionary to store the count of each emoji
