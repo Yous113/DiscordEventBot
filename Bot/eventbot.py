@@ -78,7 +78,7 @@ async def on_message(message):
         msg = await message.channel.fetch_message(max_key[0])
         # Clears the dictionary for the next event that is gonna be created
         lister.ReactDict.clear()
-        await message.channel.send("The chosen date is " + msg.content)
+        await message.channel.send("The chosen date is " + msg.content + ". We Hope you will have a fun time!")
     
 @client.event
 async def on_reaction_add(reaction, user):
