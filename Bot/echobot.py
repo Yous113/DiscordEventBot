@@ -30,15 +30,15 @@ async def on_ready():
 @client.event
 async def on_message(message):
     contents = message.content
-    helpMessage = "Decide the date of your event by using !SetEvent followed by the title of the event"
+    helpMessage = "Decide the date of your event by using '!SetEvent' followed by the title of the event"
     
     if contents == "!help":
       await message.channel.send(helpMessage)
 
 
     if contents.startswith("!SetEvent"):
-      lister.title = contents[9:]
-      firstreply = "Giv nogen datoer for eventet: " + lister.title + " ,ved brug af kommando '!date' og afslut med '!done'"
+      lister.title = contents[10:]
+      firstreply = "Write some date you would like to hold the event: "+ lister.title +", start with '!Date' then write your dates and end with '!Done'"
       # Create an object of the class event
       lister.title = lister.Event(lister.title, [])
       lister.setEvent = True
@@ -65,7 +65,7 @@ async def on_message(message):
     if contents.startswith("!SetDate"):
       # Checks if the dictionary is empty
       if len(lister.ReactDict) == 0:
-        firstreply = "Giv nogen datoer for eventet: " + lister.title + ",ved brug af kommando '!date' og afslut med '!done'"
+        firstreply = "Giv nogen datoer for eventet:" + lister.title +",ved brug af kommando '!date' og afslut med '!done'"
         await message.channel.send(firstreply)
       else:
         # Looks for the biggest value in the dictionary
@@ -76,7 +76,7 @@ async def on_message(message):
         msg = await message.channel.fetch_message(max_key[0])
         # Clears the dictionary for the next event that is gonna be created
         lister.ReactDict.clear()
-        await message.channel.send(msg.content)
+        await message.channel.send("The chosen date is " + msg.content)
     
 @client.event
 async def on_reaction_add(reaction, user):
@@ -85,7 +85,7 @@ async def on_reaction_add(reaction, user):
     if message_id in lister.ReactDict:
       lister.ReactDict[message_id] += 1
 
-
+    # For debugging
     for (k, v) in lister.ReactDict.items():
       print(k, v)
     
@@ -95,6 +95,8 @@ async def on_reaction_remove(reaction, user):
     
     if message_id in lister.ReactDict:
         lister.ReactDict[message_id] -= 1
+
+    # For debugging
     for (k, v) in lister.ReactDict.items():
       print(k, v)
 
