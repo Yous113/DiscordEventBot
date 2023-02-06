@@ -32,7 +32,7 @@ async def on_message(message):
     contents = message.content
     helpMessage = "Decide the date of your event by using '!SetEvent' followed by the title of the event"
     
-    if contents == "!help":
+    if contents == "!Help":
       await message.channel.send(helpMessage)
 
 
